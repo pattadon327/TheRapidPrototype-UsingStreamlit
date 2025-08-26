@@ -63,7 +63,7 @@ st.markdown(
 )
 
 st.markdown("<div class='app-title'>VisionLab ▸ Webcam/URL Image Processing</div>", unsafe_allow_html=True)
-st.caption("ลองแหล่งภาพหลายแบบ + ปรับพารามิเตอร์ประมวลผลภาพได้แบบเรียลไทม์ พร้อมกราฟคุณสมบัติของภาพ")
+st.caption("สามารถปรับพารามิเตอร์ประมวลผลภาพได้แบบเรียลไทม์ พร้อมแสดงกราฟคุณสมบัติของภาพ")
 
 # -------------------------------
 # Helpers
@@ -118,8 +118,8 @@ with st.sidebar:
             img_pil = Image.open(up).convert("RGB")
 
     else:  # Image URL
-        st.caption("ตัวอย่าง URL ภาพ: https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d")
-        url = st.text_input("วางลิงก์รูปภาพจากอินเทอร์เน็ต")
+        # st.caption("ตัวอย่าง URL ภาพ: https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d")
+        url = st.text_input("วางลิงก์รูปภาพ")
         if url:
             try:
                 img_pil = fetch_image_from_url(url)
@@ -135,8 +135,8 @@ with st.sidebar:
     blur_ksize = st.slider("Blur kernel (odd)", min_value=1, max_value=31, value=5, step=2)
 
     canny_on = st.checkbox("Canny Edge", value=False)
-    canny_t1 = st.slider("Canny threshold1", 0, 255, 100)
-    canny_t2 = st.slider("Canny threshold2", 0, 255, 200)
+    canny_t1 = st.slider("Canny threshold 1", 0, 255, 100)
+    canny_t2 = st.slider("Canny threshold 2", 0, 255, 200)
 
     bright_on = st.checkbox("Brightness/Contrast", value=False)
     contrast = st.slider("Contrast (α)", 0.1, 3.0, 1.0)
@@ -211,7 +211,7 @@ with col1:
     if orig_cv is not None:
         st.image(cv2_to_pil(orig_cv), caption="Original", use_column_width=True)
     else:
-        st.info("⬅ เลือกแหล่งภาพจากแถบด้านซ้าย (Webcam / Upload / URL)")
+        st.info("เลือกแหล่งภาพจากแถบด้านซ้าย (Webcam / Upload / URL)")
 
 with col2:
     st.subheader("ผลลัพธ์หลังประมวลผล")
@@ -285,12 +285,10 @@ else:
 # -------------------------------
 # Footer / Tips
 # -------------------------------
-with st.expander("เคล็ดลับการใช้งาน"):
+with st.expander("การใช้งาน"):
     st.markdown(
         """
-        - ใช้ **Webcam** เพื่อถ่ายภาพทันที (ทำงานผ่านเบราว์เซอร์ของ Streamlit)
-        - ถ้าใช้ **Image URL**: ลองภาพจาก Unsplash หรือเว็บไซต์ที่เปิดให้ดึงรูปได้
-        - ปรับ **Gaussian Blur**, **Canny**, และ **Brightness/Contrast** เพื่อดูผลที่แตกต่าง
+        - ปรับ **Gaussian Blur**, **Canny**, และ **Brightness/Contrast** เพื่อดูผลลัพธ์ที่แตกต่าง
         - กราฟ Histogram ด้านล่างแสดงการกระจายของค่า Pixel ของภาพผลลัพธ์
         - ปรับ **Rotate** และ **Resize** เพื่อเตรียมภาพก่อนนำไปใช้งานอื่น
         """
