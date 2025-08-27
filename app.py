@@ -1,14 +1,3 @@
-# app.py
-# Streamlit: Webcam/URL Image Processing Playground (Modern UI)
-# -----------------------------------------------------------
-# Features
-# - Input sources: Webcam (via st.camera_input), Upload, or Internet URL
-# - Simple image-processing pipeline with tunable parameters (sidebar)
-# - Live preview: Original vs Processed
-# - One chart from image features (intensity/color histogram)
-# - Download processed image
-# - Modern layout with a clean theme & subtle CSS polish
-
 import io
 from io import BytesIO
 import base64
@@ -19,9 +8,6 @@ import cv2
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# -------------------------------
-# Page & basic theme
-# -------------------------------
 st.set_page_config(
     page_title="VisionLab: Webcam/URL Image Processing",
     page_icon="📷",
@@ -29,7 +15,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Subtle custom CSS for modern look
 st.markdown(
     """
     <style>
@@ -65,9 +50,6 @@ st.markdown(
 st.markdown("<div class='app-title'>VisionLab ▸ Webcam/URL Image Processing</div>", unsafe_allow_html=True)
 st.caption("สามารถปรับพารามิเตอร์ประมวลผลภาพได้แบบเรียลไทม์ พร้อมแสดงกราฟคุณสมบัติของภาพ")
 
-# -------------------------------
-# Helpers
-# -------------------------------
 
 def pil_to_cv2(img_pil: Image.Image) -> np.ndarray:
     arr = np.array(img_pil.convert("RGB"))
@@ -91,9 +73,8 @@ def ensure_uint8(img: np.ndarray) -> np.ndarray:
     img = np.clip(img, 0, 255)
     return img.astype(np.uint8)
 
-# -------------------------------
-# Sidebar: Input source & controls
-# -------------------------------
+# Input source & controls
+
 with st.sidebar:
     st.header("แหล่งข้อมูลภาพ")
     source = st.radio(
@@ -148,9 +129,8 @@ with st.sidebar:
     rotate_on = st.checkbox("Rotate", value=False)
     angle = st.slider("Angle (°)", -180, 180, 0)
 
-# -------------------------------
 # Processing pipeline
-# -------------------------------
+
 proc_cv = None
 orig_cv = None
 
@@ -158,7 +138,7 @@ if img_pil is not None:
     orig_cv = pil_to_cv2(img_pil)
     img = orig_cv.copy()
 
-    # Grayscale first (optional)
+    # Grayscale 
     if use_grayscale:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -192,7 +172,7 @@ if img_pil is not None:
         new_h = max(1, int(h * scale_percent / 100.0))
         img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA if scale_percent < 100 else cv2.INTER_LINEAR)
 
-    # Rotate (around center)
+    # Rotate 
     if rotate_on and angle != 0:
         h, w = img.shape[:2]
         M = cv2.getRotationMatrix2D((w/2, h/2), angle, 1.0)
@@ -201,9 +181,8 @@ if img_pil is not None:
 
     proc_cv = ensure_uint8(img)
 
-# -------------------------------
 # Layout & display
-# -------------------------------
+
 col1, col2 = st.columns(2, gap="large")
 
 with col1:
@@ -234,9 +213,9 @@ with col2:
 
 st.divider()
 
-# -------------------------------
-# Chart from image features (one chart)
-# -------------------------------
+
+# Histogram
+
 st.subheader("กราฟคุณสมบัติของภาพ (Histogram)")
 
 if proc_cv is not None:
@@ -282,9 +261,8 @@ if proc_cv is not None:
 else:
     st.caption("กราฟจะแสดงเมื่อมีภาพผลลัพธ์")
 
-# -------------------------------
-# Footer / Tips
-# -------------------------------
+# Tips
+
 with st.expander("การใช้งาน"):
     st.markdown(
         """
